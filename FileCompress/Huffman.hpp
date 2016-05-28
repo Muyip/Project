@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "Heap.hpp"
+//#include "FileCompress.hpp"
 using namespace std;
 
 template<class T>	//T --> int
@@ -25,7 +26,7 @@ struct HuffmanTreeNode
 
 };
 
-template<class T>	//T --> int
+template<class T>	//T --> HuffmanTreeNode
 class HuffmanTree
 {
 	typedef struct HuffmanTreeNode<T> HTNode;
@@ -36,17 +37,20 @@ class HuffmanTree
 			HTNode* *htna = new HTNode*[len];    //htna == HuffmanTreeNodeArray
 			for(int i = 0; i < len; ++i)
 			{
-				//htna[i]->_weight = arr[i];
 				//new htna[i] HTNode(arr[i]);
 				htna[i] = new HTNode(arr[i]);
 			}
 
 			//int *arr   -->   HTNode *htna
 			_root = CreateTree(htna, len);
+
+			cout<<_root->_weight._ch<<endl;
+			cout<<_root->_weight._count<<endl;
+			cout<<"11111111111111"<<endl;
 		}
 
-		HTNode* CreateTree(HTNode* *htna, int len)	//T --> HTNode
-		{
+		HTNode* CreateTree(HTNode* *htna, int len)   //htna element type --> HTNode*
+		{ 
 			//建堆
 			Heap<HTNode* > hp(htna, len);
 
@@ -60,7 +64,7 @@ class HuffmanTree
 				HTNode *left = new HTNode(pmin1->_weight);
 				HTNode *right = new HTNode(pmin2->_weight);
 
-				int tmp = (pmin1->_weight) + (pmin2->_weight);
+				T tmp = (pmin1->_weight) + (pmin2->_weight);
 				HTNode *parent = new HTNode(tmp, left, right);
 
 				hp.Push(parent);
@@ -68,6 +72,11 @@ class HuffmanTree
 
 			return hp.Top();
 		} 
+
+		HTNode* GetRoot()
+		{
+			return _root;
+		}
 
 	protected:
 		HTNode *_root;

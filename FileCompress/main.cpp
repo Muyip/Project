@@ -6,20 +6,17 @@
  ************************************************************************/
 
 #include <iostream>
-#include "Huffman.hpp"
+#include "FileCompress.hpp"
 using namespace std;
 
 int main()
 {
-	int arr[] = {3,5,1,8,7,9,2,4,6};
-	HuffmanTree<int> hp(arr, sizeof(arr)/sizeof(*arr));
+	//int fd = open("./file", O_RDONLY);
+	//cout<<fd<<endl;
 
-	//Heap<int> hp(arr, sizeof(arr)/sizeof(*arr));
-	//hp.PrintHeap();
-	//hp.Pop();
-	//hp.PrintHeap();
-	//hp.Push(1);
-	//hp.PrintHeap();
+	FileCompress fc;
+	fc.Compress("./file");
+
 
 	return 0;
 }

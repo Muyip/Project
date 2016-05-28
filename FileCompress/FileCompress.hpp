@@ -6,7 +6,16 @@
  ************************************************************************/
 
 #include <iostream>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <string>
+
+#include "Huffman.hpp"
 using namespace std;
 
 
@@ -14,9 +23,18 @@ typedef long LongType;
 
 struct CharInfo
 {
-	CharInfo()
-		:_count(0)
+	CharInfo(LongType count = 0)
+		:_count(count)
+	{}
+
+	bool operator<(CharInfo &rhs)
 	{
+		return _count < rhs._count;
+	}
+
+	CharInfo operator+(CharInfo &rhs)
+	{
+		return CharInfo(_count + rhs._count);
 	}
 
 	unsigned char _ch;
@@ -27,10 +45,16 @@ struct CharInfo
 class FileCompress
 {
 	public:
+		FileCompress()
+		{
+		}
+
+	public:
 		void Compress(const char *filename)
 		{
+			//打开要压缩的文件
 			int fd_in = 0;
-			if(fd_in = open(filename, O_RDONLY) == -1)
+			if((fd_in = open(filename, O_RDONLY)) == -1)
 			{
 				perror("open");
 				exit(1);
@@ -49,23 +73,42 @@ class FileCompress
 					unsigned int index = (unsigned char)ch;
 					_infos[index]._ch = ch;
 					++_infos[index]._count;
-
 				}
-			}
-
-			//构建HuffmanTree
-			HuffmanTree
-
-			//生成HuffmanCode
-
-
+			}//统计完成
+			
+			//生成 HuffmanTree
+			HuffmanTree<CharInfo> huffman(_infos, 256);    //数组，数组长度
+		
+			//生成 HuffmanCode
+			string code = "";
+			GeneralHuffmanCode(huffman.GetRoot(), code);
 
 			//读文件，对每一个字符定位到infos[]，取到code，到8位，写到输出文件
-
-
+			
 		}
 
 		void UnCompress(const char *filename);
+		
+		void GeneralHuffmanCode(HuffmanTreeNode<CharInfo> *root, string code)
+		{
+			if(root == NULL)
+				return;
+			else if(root->_left == NULL && root->_right == NULL)    //PreOrder
+			{
+				_infos[root->_weight._ch]._code = code;
+			}
+
+			else if(root->_left)
+			{
+				code += "0";
+				GeneralHuffmanCode(root->_left, code);
+			}
+			else if(root->_right)
+			{
+				code += "1";
+				GeneralHuffmanCode(root->_right, code);
+			}
+		}
 	protected:
 		CharInfo _infos[256];
 };
