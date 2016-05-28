@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string>
 
+#include <queue>
+
 #include "Huffman.hpp"
 using namespace std;
 
@@ -78,6 +80,8 @@ class FileCompress
 			
 			//生成 HuffmanTree
 			HuffmanTree<CharInfo> huffman(_infos, 256);    //数组，数组长度
+
+			Print(huffman.GetRoot());
 		
 			//生成 HuffmanCode
 			string code = "";
@@ -90,24 +94,45 @@ class FileCompress
 		void UnCompress(const char *filename);
 		//字符及其对应的个数放到配置文件中，解压缩时构建哈夫曼树
 		
+	protected:
 		void GeneralHuffmanCode(HuffmanTreeNode<CharInfo> *root, string code)
 		{
 			if(root == NULL)
 				return;
 
-			else if(root->_left)
+			if(root->_left)
 			{
 				GeneralHuffmanCode(root->_left, code+"0");
+				//cout<<1<<endl;
 			}
-			else if(root->_right)
+			if(root->_right)
 			{
 				GeneralHuffmanCode(root->_right, code+"1");
+				//cout<<2<<endl;
 			}
-			else if(root->_left == NULL && root->_right == NULL)    //PreOrder
+			if(root->_left == NULL && root->_right == NULL)    //PreOrder
 			{
-				_infos[root->_weight._ch]._code = code;
+				_infos[root->_weight._ch]._code = code;    //Huffman Code还是记录到_infos里面，Huffman Tree只是充当一个找到编码（路径）和这个叶子节点在_infos的下标
+				//cout<<3<<endl;
 			}
 		}
+
+		void Print(HuffmanTreeNode<CharInfo> *root)
+		{
+			queue<HuffmanTreeNode<CharInfo>* > q;
+			q.push(root);
+			while(!q.empty())
+			{
+				HuffmanTreeNode<CharInfo> *tmp = q.front();
+				q.pop();
+				cout<<tmp->_weight._count<<" ";
+				if(tmp->_left)
+					q.push(tmp->_left);
+				if(tmp->_right)
+					q.push(tmp->_right);
+			}
+		}
+
 	protected:
 		CharInfo _infos[256];
 };

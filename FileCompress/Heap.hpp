@@ -14,6 +14,9 @@ template<class T>	//T --> HTNode
 class Heap             //小堆
 {
 	public:
+		Heap()
+		{}
+
 		Heap(T *array, int len)	 //array element type  --> HTNode *
 		{
 			_array.reserve(len);

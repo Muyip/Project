@@ -10,7 +10,7 @@
 //#include "FileCompress.hpp"
 using namespace std;
 
-template<class T>	//T --> int
+template<class T>   //T --> CharInfo
 struct HuffmanTreeNode
 {
 	HuffmanTreeNode(T weight = 0, struct HuffmanTreeNode<T> *left = NULL, struct HuffmanTreeNode<T> *right = NULL)
@@ -26,7 +26,7 @@ struct HuffmanTreeNode
 
 };
 
-template<class T>	//T --> HuffmanTreeNode
+template<class T>	//T --> CharInfo
 class HuffmanTree
 {
 	typedef struct HuffmanTreeNode<T> HTNode;
@@ -34,26 +34,21 @@ class HuffmanTree
 	public:
 		HuffmanTree(T *arr, int len)
 		{
-			HTNode* *htna = new HTNode*[len];    //htna == HuffmanTreeNodeArray
+			Heap<HTNode* > hp;
+
 			for(int i = 0; i < len; ++i)
 			{
-				//new htna[i] HTNode(arr[i]);
-				htna[i] = new HTNode(arr[i]);
+				if(arr[i]._count == 0)    //arr[i]->_weight._ch 该字符没有出现过
+					continue;
+
+				hp.Push(new HTNode(arr[i]));       //创建一个新的树节点，插入到堆中
 			}
 
-			//int *arr   -->   HTNode *htna
-			_root = CreateTree(htna, len);
-
-			cout<<_root->_weight._ch<<endl;
-			cout<<_root->_weight._count<<endl;
-			cout<<"11111111111111"<<endl;
+			_root = CreateTree(hp);
 		}
 
-		HTNode* CreateTree(HTNode* *htna, int len)   //htna element type --> HTNode*
+		HTNode* CreateTree(Heap<HTNode* > &hp)
 		{ 
-			//建堆
-			Heap<HTNode* > hp(htna, len);
-
 			while(hp.Size() > 1)
 			{
 				HTNode *pmin1 = hp.Top();    //最小值1
@@ -61,11 +56,11 @@ class HuffmanTree
 				HTNode *pmin2 = hp.Top();    //最小值2
 				hp.Pop();
 
-				HTNode *left = new HTNode(pmin1->_weight);
-				HTNode *right = new HTNode(pmin2->_weight);
+				//HTNode *left = new HTNode(pmin1->_weight);
+				//HTNode *right = new HTNode(pmin2->_weight);
 
 				T tmp = (pmin1->_weight) + (pmin2->_weight);
-				HTNode *parent = new HTNode(tmp, left, right);
+				HTNode *parent = new HTNode(tmp, pmin1, pmin2);
 
 				hp.Push(parent);
 			}
@@ -80,5 +75,4 @@ class HuffmanTree
 
 	protected:
 		HTNode *_root;
-
 };
