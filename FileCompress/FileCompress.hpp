@@ -88,25 +88,24 @@ class FileCompress
 		}
 
 		void UnCompress(const char *filename);
+		//字符及其对应的个数放到配置文件中，解压缩时构建哈夫曼树
 		
 		void GeneralHuffmanCode(HuffmanTreeNode<CharInfo> *root, string code)
 		{
 			if(root == NULL)
 				return;
-			else if(root->_left == NULL && root->_right == NULL)    //PreOrder
-			{
-				_infos[root->_weight._ch]._code = code;
-			}
 
 			else if(root->_left)
 			{
-				code += "0";
-				GeneralHuffmanCode(root->_left, code);
+				GeneralHuffmanCode(root->_left, code+"0");
 			}
 			else if(root->_right)
 			{
-				code += "1";
-				GeneralHuffmanCode(root->_right, code);
+				GeneralHuffmanCode(root->_right, code+"1");
+			}
+			else if(root->_left == NULL && root->_right == NULL)    //PreOrder
+			{
+				_infos[root->_weight._ch]._code = code;
 			}
 		}
 	protected:
