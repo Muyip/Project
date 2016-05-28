@@ -9,11 +9,11 @@
 #include "Heap.hpp"
 using namespace std;
 
-template<class T>
+template<class T>	//T --> int
 struct HuffmanTreeNode
 {
-	HuffmanTreeNode(T &weight, struct HuffmanTreeNode *left = NULL, struct HuffmanTreeNode *right = NULL)
-		:_weight(value),
+	HuffmanTreeNode(T weight = 0, struct HuffmanTreeNode<T> *left = NULL, struct HuffmanTreeNode<T> *right = NULL)
+		:_weight(weight),
 		_left(left),
 		_right(right)
 	{}
@@ -23,36 +23,50 @@ struct HuffmanTreeNode
 	struct HuffmanTreeNode<T> *_left;
 	struct HuffmanTreeNode<T> *_right;
 
-}HTNode;
+};
 
+template<class T>	//T --> int
 class HuffmanTree
 {
-	typedef HuffmanTreeNode<T> HTNode;
+	typedef struct HuffmanTreeNode<T> HTNode;
 
 	public:
 		HuffmanTree(T *arr, int len)
 		{
-			_root = CreateTree(arr, len);
-		}
-
-		HTNode* CreateTree(T *arr, int len)
-		{
-			//建堆
-			Heap<HTNode<T>* > hp(arr, len);
-
-			T *pmin1 = hp.Top();    //最小值1
-			hp.Pop();
-			T *pmin2 = hp.Top();    //最小值2
-			hp.Pop();
-
-
-			while(hp.size())
+			HTNode* *htna = new HTNode*[len];    //htna == HuffmanTreeNodeArray
+			for(int i = 0; i < len; ++i)
 			{
-				int tmp = min1 + min2;
-				//HTNode *root = new HTNode(tmp, new HTNode(min1), new HTNode(min2));	
-				hp.Push(tmp);
+				//htna[i]->_weight = arr[i];
+				//new htna[i] HTNode(arr[i]);
+				htna[i] = new HTNode(arr[i]);
 			}
 
+			//int *arr   -->   HTNode *htna
+			_root = CreateTree(htna, len);
+		}
+
+		HTNode* CreateTree(HTNode* *htna, int len)	//T --> HTNode
+		{
+			//建堆
+			Heap<HTNode* > hp(htna, len);
+
+			while(hp.Size() > 1)
+			{
+				HTNode *pmin1 = hp.Top();    //最小值1
+				hp.Pop();
+				HTNode *pmin2 = hp.Top();    //最小值2
+				hp.Pop();
+
+				HTNode *left = new HTNode(pmin1->_weight);
+				HTNode *right = new HTNode(pmin2->_weight);
+
+				int tmp = (pmin1->_weight) + (pmin2->_weight);
+				HTNode *parent = new HTNode(tmp, left, right);
+
+				hp.Push(parent);
+			}
+
+			return hp.Top();
 		} 
 
 	protected:

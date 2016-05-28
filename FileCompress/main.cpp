@@ -6,18 +6,21 @@
  ************************************************************************/
 
 #include <iostream>
-#include "Heap.hpp"
+#include "Huffman.hpp"
 using namespace std;
 
 int main()
 {
 	int arr[] = {3,5,1,8,7,9,2,4,6};
-	Heap<int> hp(arr, sizeof(arr)/sizeof(*arr));
-	hp.PrintHeap();
-	hp.Pop();
-	hp.PrintHeap();
-	hp.Push(1);
-	hp.PrintHeap();
+	HuffmanTree<int> hp(arr, sizeof(arr)/sizeof(*arr));
+
+	//Heap<int> hp(arr, sizeof(arr)/sizeof(*arr));
+	//hp.PrintHeap();
+	//hp.Pop();
+	//hp.PrintHeap();
+	//hp.Push(1);
+	//hp.PrintHeap();
+
 	return 0;
 }
 

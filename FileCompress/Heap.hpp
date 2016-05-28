@@ -10,22 +10,18 @@
 #include <assert.h>
 using namespace std;
 
-template<class T>
+template<class T>	//T --> HTNode
 class Heap             //小堆
 {
 	public:
-		Heap(T *array, int len)
+		Heap(T *array, int len)	 //array element type  --> HTNode *
 		{
 			_array.reserve(len);
 
 			for(int i = 0; i < len; ++i)
 				_array.push_back(array[i]);
 
-			CreateHeap();
-		}
-
-		void CreateHeap()
-		{
+			//建堆
 			for(int root = _array.size()/2 - 1; root >= 0; --root)
 				AdjustDown(root);
 		}
@@ -38,10 +34,10 @@ class Heap             //小堆
 			int len = _array.size();
 			while(child < len)
 			{
-				if(child+1 < len && _array[child+1] < _array[child])
+				if(child+1 < len && ((_array[child+1]->_weight) < (_array[child]->_weight)))
 					++child;
 
-				if(_array[child] <_array[parent])
+				if((_array[child]->_weight) < (_array[parent]->_weight))
 				{
 					swap(_array[parent], _array[child]);
 
@@ -72,13 +68,12 @@ class Heap             //小堆
 			int parent = (child-1) / 2;
 			while(child > 0)
 			{
-				if(_array[child] < _array[parent])
+				if((_array[child]->_weight) < (_array[parent]->_weight))
 				{
 					swap(_array[parent], _array[child]);
 				}
 				child = parent;
 			 	parent = (child-1) / 2;
-
 			}
 		}
 
@@ -97,16 +92,16 @@ class Heap             //小堆
 
 		
 	//protected:
-		void PrintHeap()
-		{
-			typename vector<T>::iterator iter = _array.begin();
-			while(iter != _array.end())
-			{
-				cout<<*iter<<" ";
-				++iter;
-			}
-			cout<<endl;
-		}
+		//void PrintHeap()
+		//{
+		//	typename vector<T>::iterator iter = _array.begin();
+		//	while(iter != _array.end())
+		//	{
+		//		cout<<*iter<<" ";
+		//		++iter;
+		//	}
+		//	cout<<endl;
+		//}
 
 
 	protected:
