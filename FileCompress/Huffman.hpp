@@ -56,9 +56,6 @@ class HuffmanTree
 				HTNode *pmin2 = hp.Top();    //最小值2
 				hp.Pop();
 
-				//HTNode *left = new HTNode(pmin1->_weight);
-				//HTNode *right = new HTNode(pmin2->_weight);
-
 				T tmp = (pmin1->_weight) + (pmin2->_weight);
 				HTNode *parent = new HTNode(tmp, pmin1, pmin2);
 
