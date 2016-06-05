@@ -3,4 +3,4 @@ FileCompress:main.cpp
 
 .PHONY:clean
 clean:
-	rm -rf FileCompress CompressFile
+	rm -rf FileCompress compressFile compress.conf uncompressFile

@@ -7,16 +7,30 @@
 
 #include <iostream>
 #include "FileCompress.hpp"
+#include "config.hpp"
+
 using namespace std;
+
+
+void TestCompress()
+{
+	FileCompress fc;
+	fc.Compress(FILE_NAME);
+}
+
+void TestUnCompress()
+{
+	FileCompress fc;
+	fc.UnCompress(UNCOMPRESS_FILE_NAME);
+}
+
 
 int main()
 {
 	//int fd = open("./file", O_RDONLY);
 	//cout<<fd<<endl;
-
-	FileCompress fc;
-	fc.Compress("./file");
-
+	TestCompress();
+	TestUnCompress();
 
 	return 0;
 }

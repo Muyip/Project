@@ -47,6 +47,11 @@ class HuffmanTree
 			_root = CreateTree(hp);
 		}
 
+		HuffmanTree(Heap<HTNode *> &hp)
+		{
+			_root = CreateTree(hp);
+		}
+
 		HTNode* CreateTree(Heap<HTNode* > &hp)
 		{ 
 			while(hp.Size() > 1)
