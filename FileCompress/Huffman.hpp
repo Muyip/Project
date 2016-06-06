@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include "Heap.hpp"
-//#include "FileCompress.hpp"
 using namespace std;
 
 template<class T>   //T --> CharInfo

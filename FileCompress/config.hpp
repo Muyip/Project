@@ -25,3 +25,20 @@ void perr_exit(const char *str)
 	exit(1);
 }
 
+#ifdef __DEBUG__
+		void Print(HuffmanTreeNode<CharInfo> *root)
+		{
+			queue<HuffmanTreeNode<CharInfo>* > q;
+			q.push(root);
+			while(!q.empty())
+			{
+				HuffmanTreeNode<CharInfo> *tmp = q.front();
+				q.pop();
+				cout<<tmp->_weight._count<<" ";
+				if(tmp->_left)
+					q.push(tmp->_left);
+				if(tmp->_right)
+					q.push(tmp->_right);
+			}
+		}
+#endif  /* __DEBUG__ */

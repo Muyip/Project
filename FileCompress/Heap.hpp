@@ -93,19 +93,6 @@ class Heap             //小堆
 			return _array[0];
 		}
 
-		
-	//protected:
-		//void PrintHeap()
-		//{
-		//	typename vector<T>::iterator iter = _array.begin();
-		//	while(iter != _array.end())
-		//	{
-		//		cout<<*iter<<" ";
-		//		++iter;
-		//	}
-		//	cout<<endl;
-		//}
-
 
 	protected:
 		vector<T> _array;

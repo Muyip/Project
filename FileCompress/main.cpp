@@ -27,9 +27,8 @@ void TestUnCompress()
 
 int main()
 {
-	//int fd = open("./file", O_RDONLY);
-	//cout<<fd<<endl;
 	TestCompress();
+
 	TestUnCompress();
 
 	return 0;
