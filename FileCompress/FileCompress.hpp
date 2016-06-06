@@ -143,7 +143,7 @@ class FileCompress
 #ifdef __TIME__
 			finish = clock();
 			duration = (double)(finish-start);
-			cout<<"Compress used "<<duration/pow(10, 6)<<" seconds"<<endl;
+			cout<<"Compress used "<<duration / CLOCKS_PER_SEC <<" seconds"<<endl;
 #endif  /* __TIME__ */
 
 
@@ -259,7 +259,7 @@ class FileCompress
 #ifdef __TIME__
 			finish = clock();
 			duration = (double)(finish-start);
-			cout<<"UnCompress used "<<duration/pow(10, 6)<<" seconds"<<endl;
+			cout<<"UnCompress used "<<duration / CLOCKS_PER_SEC <<" seconds"<<endl;
 #endif  /* _TIME__ */
 
 		}
