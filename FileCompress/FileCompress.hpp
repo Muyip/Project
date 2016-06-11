@@ -252,6 +252,7 @@ class FileCompress
 			}
 
 			RET:
+			fflush(fp_un);
 			fclose(fp_conf);
 			fclose(fp_un);
 			fclose(fp_com);
