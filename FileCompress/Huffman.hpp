@@ -4,12 +4,13 @@
 	> Mail: 1335289877@qq.com 
 	> Created Time: Чт. 26 мая 2016 19:25:02
  ************************************************************************/
+#pragma once
 
 #include <iostream>
 #include "Heap.hpp"
 using namespace std;
 
-template<class T>   //T --> CharInfo
+template<class T>   //  T --> CharInfo
 struct HuffmanTreeNode
 {
 	HuffmanTreeNode(T weight = 0, struct HuffmanTreeNode<T> *left = NULL, struct HuffmanTreeNode<T> *right = NULL)
@@ -25,7 +26,7 @@ struct HuffmanTreeNode
 
 };
 
-template<class T>	//T --> CharInfo
+template<class T>	//  T --> CharInfo
 class HuffmanTree
 {
 	typedef struct HuffmanTreeNode<T> HTNode;
@@ -53,7 +54,7 @@ class HuffmanTree
 
 		HTNode* CreateTree(Heap<HTNode* > &hp)
 		{ 
-			while(hp.Size() > 1)
+			while(hp.Size() > 1)    // * 当最后只有一个数字或者没有数字时，退出
 			{
 				HTNode *pmin1 = hp.Top();    //最小值1
 				hp.Pop();

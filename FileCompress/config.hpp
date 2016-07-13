@@ -8,9 +8,13 @@
 #pragma once
 
 #include <iostream>
+
+#include "FileCompress.hpp"
+#include "Huffman.hpp"
 using namespace std;
 
-//#define __DEBUG__
+#define __DEBUG__
+//#define __PRINT__
 #define __TIME__
 
 const unsigned int MAX_DIG_OF_COUNT = 10;
@@ -26,19 +30,25 @@ void perr_exit(const char *str)
 }
 
 #ifdef __DEBUG__
-		void Print(HuffmanTreeNode<CharInfo> *root)
-		{
-			queue<HuffmanTreeNode<CharInfo>* > q;
-			q.push(root);
-			while(!q.empty())
-			{
-				HuffmanTreeNode<CharInfo> *tmp = q.front();
-				q.pop();
-				cout<<tmp->_weight._count<<" ";
-				if(tmp->_left)
-					q.push(tmp->_left);
-				if(tmp->_right)
-					q.push(tmp->_right);
-			}
-		}
+template<class T>
+void Print(HuffmanTreeNode<T> *root)
+{
+	cout<<"文件中出现的所有字符的次数"<<endl;
+
+	queue<HuffmanTreeNode<T>* > q;
+	q.push(root);
+	while(!q.empty())
+	{
+		HuffmanTreeNode<T> *tmp = q.front();
+		q.pop();
+		cout<<tmp->_weight._ch<<':';
+		cout<<tmp->_weight._count<<endl;
+		if(tmp->_left)
+			q.push(tmp->_left);
+		if(tmp->_right)
+			q.push(tmp->_right);
+	}
+
+	cout<<endl;
+}
 #endif  /* __DEBUG__ */

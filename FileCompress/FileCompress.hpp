@@ -20,6 +20,7 @@
 
 #include "Huffman.hpp"
 #include "config.hpp"
+
 using namespace std;
 
 typedef long LongType;
@@ -45,9 +46,9 @@ struct CharInfo
 		return CharInfo(_count + rhs._count);
 	}
 
-	unsigned char _ch;
-	LongType      _count;
-	string        _code;
+	unsigned char _ch;         // * 对应的字符
+	LongType      _count;      // * 该字符出现的次数
+	string        _code;       // * 该字符的Huffman编码
 };
 
 
@@ -87,7 +88,11 @@ class FileCompress
 			HuffmanTree<CharInfo> huffman(_infos, 256);    //数组，数组长度
 
 #ifdef __DEBUG__
+
+#ifdef __PRINT__
 			Print(huffman.GetRoot());
+#endif   /* __PRINT__ */
+
 #endif   /* __DEBUG__ */
 
 			//生成 HuffmanCode

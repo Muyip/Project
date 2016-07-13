@@ -4,6 +4,7 @@
 	> Mail: 1335289877@qq.com 
 	> Created Time: Чт. 26 мая 2016 12:13:33
  ************************************************************************/
+#pragma once
 
 #include <iostream>
 #include <vector>
