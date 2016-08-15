@@ -142,19 +142,22 @@ protected:
 public:
 	// * 几个基本函数(构造，析构，拷贝构造，赋值运算符)
 
-	List() { EmptyInitialize(); }
-	List(SizeType n, const T& value) { FillInitialize(Begin(), n, value); }
+	List() { 
+		EmptyInitialize();
+	}
+	List(SizeType n, const T& value) { FillInitialize(n, value); }
 	// * 对只有一个数据成员的类，单参数的构造函数容易发生隐士转换，前面的explicit可以防止这个发生
-	explicit List(SizeType n) { FillInitialize(Begin(), n, T()); }
+	explicit List(SizeType n) { FillInitialize(n, T()); }
 
 	// * 用其他链表的任意一段区间构造一个新链表
 	List(ConstIterator first, ConstIterator last) { RangeInitialize(first, last); };
 	// * 用数组的任意一段区间构造一个新链表
 	List(const T* first, const T* last) { RangeInitialize(first, last); }
 	// * 用任意类型的数据区间构造一个新链表
+#ifdef __STL_MEMBER_TEMPLATES
 	template<class InputIterator>
 	List(InputIterator first, InputIterator last) { RangeInitialize(first, last); }
-
+#endif
 	// * 拷贝构造
 	List(const List<T> &x)
 	{
@@ -252,8 +255,8 @@ public:
 	}
 
 	// * 函数体中把n强转成SizeType(size_t)类型的原因：如果不强转，会递归调用自己，因为不会退出，从而导致栈溢出
-	void Insert(Iterator &position, int n, const T& x) { Insert(position, (SizeType)n, x); }
-	void Insert(Iterator &position, long n, const T& x) { Insert(position, (SizeType)n, x); }
+	//void Insert(Iterator &position, int n, const T& x) { Insert(position, (SizeType)n, x); }
+	//void Insert(Iterator &position, long n, const T& x) { Insert(position, (SizeType)n, x); }
 	
 
 /* * func: 为用其他链表的一段区间去初始化链表而设计， 在position前插入 [first, last) 之间的元素 */
@@ -271,13 +274,14 @@ public:
 	}
 
 /* * func: 为用任意类型的一段区间去初始化链表而设计 */
+#ifdef __STL_MEMBER_TEMPLATES
 	template<class InputIterator>
 	void Insert(Iterator position, InputIterator first, InputIterator last)
 	{
 		for (; first != last; ++first)
 			Insert(position, *first);
 	}
-	
+#endif
 
 /* * func: 删除指定为位置position处的元素 */
 	Iterator Erase(Iterator &position)
@@ -323,8 +327,8 @@ public:
 	void Resize(SizeType newSize) { Resize(newSize, T()); }
 
 /* * func: 把list本身用[first, last)这段区间替换掉 */
-	template<class _Iter>
-	void Assign(_Iter first, _Iter last)
+	template<class InputIterator>
+	void Assign(InputIterator first, InputIterator last)
 	{
 		Iterator it = Begin();
 
@@ -335,7 +339,7 @@ public:
 		Erase(it, End());
 
 		for (; first != last; ++first)
-			Insert(it++, *first);
+			Insert(it, *first);
 	}
 
 
@@ -419,6 +423,12 @@ public:
 			Transfer(last1, first2, last2);
 	}
 
+/* * func: 对链表进行排序，主要使用单向快排 */
+	void Sort()
+	{
+		_Sort(Begin(), End());
+	}
+
 	void Reverse()
 	{
 		Iterator first = Begin();        // * 第一个节点
@@ -432,7 +442,8 @@ public:
 		while (first != end)    // * first 从第二个数据节点开始
 		{
 			prev = first;
-			Transfer(Begin(), prev, ++first);
+			++first;
+			Transfer(Begin(), prev, first);
 		}
 	}
 
@@ -517,10 +528,17 @@ protected:
 			first._node->_prev->_next = last._node;
 
 			// * 三个向左的方向
+			LinkType tmp = position._node->_prev;
 			position._node->_prev = last._node->_prev;
 			last._node->_prev = first._node->_prev;
-			first._node->_prev = position._node->_prev;
+			first._node->_prev = tmp;
 		}
+	}
+
+	void RangeInitialize(ConstIterator first, ConstIterator last)
+	{
+		EmptyInitialize();
+		Insert(Begin(), first, last);
 	}
 
 	void RangeInitialize(const T* first, const T* last)
@@ -529,11 +547,39 @@ protected:
 		Insert(Begin(), first, last);
 	}
 
+#ifdef __STL_MEMBER_TEMPLATES
 	template<class InputIterator>
 	void RangeInitialize(InputIterator first, InputIterator last)
 	{
 		EmptyInitialize();
 		Insert(Begin(), first, last);
+	}
+#endif
+
+
+	void _Sort(Iterator first, Iterator last)
+	{
+		Iterator tmp = first;
+		if (tmp == last || ++tmp == last)
+			return;
+
+		Iterator mid = first;
+		Iterator cur = first;
+		ValueType key = *cur;
+		++cur;
+		while (cur != last)
+		{
+			if (*cur < key)
+			{
+				if (++mid != cur)
+					std::swap(*cur, *mid);
+			}
+			++cur;
+		}
+		std::swap(*first, *mid);
+
+		_Sort(first, mid);
+		_Sort(++mid, last);
 	}
 };
 

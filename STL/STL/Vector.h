@@ -396,7 +396,7 @@ public:
 		Erase(it, End());
 
 		for (; first != last; ++first)
-			Insert(it++, *first);
+			Insert(End(), *first);
 	}
 
 protected:

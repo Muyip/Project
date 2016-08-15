@@ -8,7 +8,6 @@
 ***********************************************************************************/
 #pragma once
 
-
 // * 如果定义了__USE_MALLOC就将__malloc_alloc_template<0>作为默认配置器  
 // * 否则使用__default_alloc_template作为默认配置器  
 
@@ -134,10 +133,13 @@ public:
 
 		if (0 == result)
 		{
-			void *r = _Refill(bytes);
+			void *r = _Refill(ROUND_UP(bytes));
 			return r;
 		}
+		// 看result 和 result->free_list_link的差值
+
 		_free_list[index] = result->free_list_link;
+
 
 		return result;
 	}
@@ -173,17 +175,23 @@ private:
 		size_t nobjs = 20;    // * 默认一次取20个对象的空间
 		char *chunk = _ChunkAlloc(bytes, nobjs);
 		Obj *result;
+		Obj **myFreeList;
 
 		if (1 == nobjs)    // * 
 			return chunk;
 
+		//myFreeList = _free_list + FREELIST_INDEX(bytes);
+		size_t index = FREELIST_INDEX(bytes);
+		myFreeList = _free_list + index;
+
 		result = (Obj *)chunk;
 		Obj *cur_obj = NULL;
 		Obj *next_obj = (Obj *)(chunk + bytes);      // * chunk的类型是char *, 加上bytes后，指向下一个节点的起始地址
+		*myFreeList = next_obj;
 		for (size_t i = 1; i < nobjs; ++i)      // * 把从内存池中多取的内存挂到相应的自由链表中
 		{
 			cur_obj = next_obj;
-			next_obj = next_obj + 1;         // * next_obj = (Obj *)((char *)next_obj + n);
+			next_obj = (Obj *)((char *)next_obj + bytes);   //next_obj = next_obj + 1;
 
 			cur_obj->free_list_link = next_obj;
 		}

@@ -224,33 +224,33 @@ IteratorCategory(const T*)                // * for Vector
 }
 
 
-//template <class T, class Distance>
-//inline InputIteratorTag
-//IteratorCategory(const InputIterator<T, Distance>&)
-//{
-//	return InputIteratorTag();
-//}
+template <class T, class Distance>
+inline InputIteratorTag
+IteratorCategory(const InputIterator<T, Distance>&)
+{
+	return InputIteratorTag();
+}
 
-//template <class T, class Distance>
-//inline ForwardIteratorTag
-//IteratorCategory(const ForwardIterator<T, Distance>&) 
-//{
-//	return ForwardIteratorTag();
-//}
+template <class T, class Distance>
+inline ForwardIteratorTag
+IteratorCategory(const ForwardIterator<T, Distance>&)
+{
+	return ForwardIteratorTag();
+}
 
-//template <class T, class Distance>
-//inline BidirectionalIteratorTag
-//IteratorCategory(const BidirectionalIterator<T, Distance>&)
-//{
-//	return BidirectionalIteratorTag();
-//}
+template <class T, class Distance>
+inline BidirectionalIteratorTag
+IteratorCategory(const BidirectionalIterator<T, Distance>&)
+{
+	return BidirectionalIteratorTag();
+}
 
-//template <class T, class Distance>
-//inline RandomAccessIteratorTag
-//IteratorCategory(const RandomAccessIterator<T, Distance>&)
-//{
-//	return RandomAccessIteratorTag();
-//}
+template <class T, class Distance>
+inline RandomAccessIteratorTag
+IteratorCategory(const RandomAccessIterator<T, Distance>&)
+{
+	return RandomAccessIteratorTag();
+}
 
 
 
