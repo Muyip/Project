@@ -121,6 +121,7 @@ class FileCompress
 
 				for(; *str != '\0'; --pos, ++str)   //依次查看这个编码中不为0的位
 				{
+					//如果不够一个字节，不能往文件中写，而是写道一个buf中，buf写满，才会往文件写
 					if(pos < 0)                     //够八位，写到文件
 					{
 						if((wsz = fwrite(&buf, 1, 1, fp_out)) < 0)
@@ -128,8 +129,7 @@ class FileCompress
 
 						pos = 7;	//开始写下一个字节
 						buf = 0;
-					}
-					if(*str == '0')         //如果这个位为0，什么都不做，再读下一位
+					} if(*str == '0')         //如果这个位为0，什么都不做，再读下一位
 						continue;
 					buf |= 0x1<<pos;        //把哈夫曼编码中为1的位写到buf中
 				}  //for
@@ -215,7 +215,7 @@ class FileCompress
 					count = atoi(buf_line+2);
 				}
 				bzero(buf_line, sizeof(buf_line));
-				hp.Push(new HuffmanTreeNode<CharInfo>(CharInfo(ch, count)));   // * 新建一个树节点，放到一个堆中
+				hp.Push(new HuffmanTreeNode<CharInfo>(CharInfo(ch, count)));   // * 新建一个树节点，放到一个堆中(小堆)
 			}
 
 			HuffmanTree<CharInfo> hft(hp);      // ****** 由堆中的记录信息构建一个哈夫曼树

@@ -1,0 +1,56 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AdjustDown	Heap.hpp	/^		void AdjustDown(int root)$/;"	f	class:Heap
+COMPRESS_FILE_NAME	config.hpp	/^const char *COMPRESS_FILE_NAME = "compressFile";$/;"	v
+CONF_NAME	config.hpp	/^const char *CONF_NAME = "compress.conf";$/;"	v
+CharInfo	FileCompress.hpp	/^	CharInfo(LongType count = 0)$/;"	f	struct:CharInfo
+CharInfo	FileCompress.hpp	/^	CharInfo(unsigned char ch, LongType count = 0)$/;"	f	struct:CharInfo
+CharInfo	FileCompress.hpp	/^struct CharInfo$/;"	s
+Compress	FileCompress.hpp	/^		void Compress(const char *filename)$/;"	f	class:FileCompress
+CreateTree	Huffman.hpp	/^		HTNode* CreateTree(Heap<HTNode* > &hp)$/;"	f	class:HuffmanTree
+Empty	Heap.hpp	/^		bool Empty()$/;"	f	class:Heap
+FILE_NAME	config.hpp	/^const char *FILE_NAME = "file";$/;"	v
+FileCompress	FileCompress.hpp	/^		FileCompress()$/;"	f	class:FileCompress
+FileCompress	FileCompress.hpp	/^class FileCompress$/;"	c
+GeneralHuffmanCode	FileCompress.hpp	/^		void GeneralHuffmanCode(HuffmanTreeNode<CharInfo> *root, string code)$/;"	f	class:FileCompress
+GetRoot	Huffman.hpp	/^		HTNode* GetRoot()$/;"	f	class:HuffmanTree
+HTNode	Huffman.hpp	/^	typedef struct HuffmanTreeNode<T> HTNode;$/;"	t	class:HuffmanTree	typeref:struct:HuffmanTree::HuffmanTreeNode
+Heap	Heap.hpp	/^		Heap()$/;"	f	class:Heap
+Heap	Heap.hpp	/^		Heap(T *array, int len)	 \/\/array element type  --> HTNode *$/;"	f	class:Heap
+Heap	Heap.hpp	/^class Heap             \/\/小堆$/;"	c
+HuffmanTree	Huffman.hpp	/^		HuffmanTree(Heap<HTNode *> &hp)$/;"	f	class:HuffmanTree
+HuffmanTree	Huffman.hpp	/^		HuffmanTree(T *arr, int len)$/;"	f	class:HuffmanTree
+HuffmanTree	Huffman.hpp	/^class HuffmanTree$/;"	c
+HuffmanTreeNode	Huffman.hpp	/^	HuffmanTreeNode(T weight = 0, struct HuffmanTreeNode<T> *left = NULL, struct HuffmanTreeNode<T> *right = NULL)$/;"	f	struct:HuffmanTreeNode
+HuffmanTreeNode	Huffman.hpp	/^struct HuffmanTreeNode$/;"	s
+LongType	FileCompress.hpp	/^typedef long LongType;$/;"	t
+MAX_DIG_OF_COUNT	config.hpp	/^const unsigned int MAX_DIG_OF_COUNT = 10;$/;"	v
+Pop	Heap.hpp	/^		void Pop()$/;"	f	class:Heap
+Print	config.hpp	/^void Print(HuffmanTreeNode<T> *root)$/;"	f
+Push	Heap.hpp	/^		void Push(const T& val)$/;"	f	class:Heap
+ReadLine	FileCompress.hpp	/^		bool ReadLine(FILE *fp, char *buf_line)$/;"	f	class:FileCompress
+Size	Heap.hpp	/^		int Size()$/;"	f	class:Heap
+TestCompress	main.cpp	/^void TestCompress()$/;"	f
+TestUnCompress	main.cpp	/^void TestUnCompress()$/;"	f
+Top	Heap.hpp	/^		T Top()$/;"	f	class:Heap
+UNCOMPRESS_FILE_NAME	config.hpp	/^const char *UNCOMPRESS_FILE_NAME = "uncompressFile";$/;"	v
+UnCompress	FileCompress.hpp	/^		void UnCompress(const char *filename)$/;"	f	class:FileCompress
+__DEBUG__	config.hpp	16;"	d
+__TIME__	config.hpp	18;"	d
+_array	Heap.hpp	/^		vector<T> _array;$/;"	m	class:Heap
+_ch	FileCompress.hpp	/^	unsigned char _ch;         \/\/ * 对应的字符$/;"	m	struct:CharInfo
+_code	FileCompress.hpp	/^	string        _code;       \/\/ * 该字符的Huffman编码$/;"	m	struct:CharInfo
+_count	FileCompress.hpp	/^	LongType      _count;      \/\/ * 该字符出现的次数$/;"	m	struct:CharInfo
+_infos	FileCompress.hpp	/^		CharInfo _infos[256];$/;"	m	class:FileCompress
+_left	Huffman.hpp	/^	struct HuffmanTreeNode<T> *_left;$/;"	m	struct:HuffmanTreeNode	typeref:struct:HuffmanTreeNode::HuffmanTreeNode
+_right	Huffman.hpp	/^	struct HuffmanTreeNode<T> *_right;$/;"	m	struct:HuffmanTreeNode	typeref:struct:HuffmanTreeNode::HuffmanTreeNode
+_root	Huffman.hpp	/^		HTNode *_root;$/;"	m	class:HuffmanTree
+_weight	Huffman.hpp	/^	T                          _weight;$/;"	m	struct:HuffmanTreeNode
+main	main.cpp	/^int main()$/;"	f
+operator +	FileCompress.hpp	/^	CharInfo operator+(CharInfo &rhs)$/;"	f	struct:CharInfo
+operator <	FileCompress.hpp	/^	bool operator<(CharInfo &rhs)$/;"	f	struct:CharInfo
+perr_exit	config.hpp	/^void perr_exit(const char *str)$/;"	f
