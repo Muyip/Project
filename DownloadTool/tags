@@ -1,0 +1,45 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AnalyseUrl	downloadtool.c	/^IpAndDomainAndAddr AnalyseUrl(string & url)$/;"	f
+CC	Makefile	/^CC=g++$/;"	m
+ClearHead	downloadtool.c	/^void ClearHead(int sock)$/;"	f
+ConnectServer	downloadtool.c	/^int  ConnectServer(string & ip)$/;"	f
+DEFAULT_PORT	downloadtool.h	26;"	d
+DLT_BIN	Makefile	/^DLT_BIN=downloadtool$/;"	m
+DLT_SRC	Makefile	/^DLT_SRC=downloadtool.c$/;"	m
+Download	downloadtool.h	/^struct Download$/;"	s
+DownloadAndDisplay	downloadtool.c	/^void DownloadAndDisplay(int sockfd, int localfd, int configfd, int fileLeftSize, int offset)$/;"	f
+GetFilenameFromAddr	downloadtool.c	/^string GetFilenameFromAddr(string reqAddr)$/;"	f
+GetLine	downloadtool.c	/^int GetLine(int sock, char *buf, int buf_len)$/;"	f
+GetSuffer	downloadtool.c	/^bool GetSuffer(const char *str, int len, char *suffer)$/;"	f
+HasConfigFile	downloadtool.c	/^bool HasConfigFile(queue<int> & fdq)$/;"	f
+IpAndDomainAndAddr	downloadtool.h	/^struct IpAndDomainAndAddr$/;"	s
+NameAndFd	downloadtool.h	/^struct NameAndFd$/;"	s
+ReConnAndDown	downloadtool.c	/^void ReConnAndDown(struct IpAndDomainAndAddr & ida, int offset)$/;"	f
+ReadSameFile1	Test/test.c	/^void *ReadSameFile1(void *arg)$/;"	f
+ReadSameFile2	Test/test.c	/^void *ReadSameFile2(void *arg)$/;"	f
+RecvResponseGram	downloadtool.c	/^int RecvResponseGram(int sockfd)$/;"	f
+SendRequestGram	downloadtool.c	/^void SendRequestGram(int sockfd, struct IpAndDomainAndAddr &info, int offset)$/;"	f
+_ADDR_MAX	downloadtool.h	/^const int _ADDR_MAX = 256; $/;"	v
+_BREAK_MAX	downloadtool.h	/^const int _BREAK_MAX = 256; $/;"	v
+_BUF_SIZE	downloadtool.h	/^const int _BUF_SIZE = 4096;$/;"	v
+_DOMAIN_MAX	downloadtool.h	/^const int _DOMAIN_MAX = 64;$/;"	v
+_FILENAME_MAX	downloadtool.h	/^const int _FILENAME_MAX = 64;$/;"	v
+_LINE_MAX	downloadtool.h	/^const int _LINE_MAX = 4096;$/;"	v
+_RANGE_MAX	downloadtool.h	/^const int _RANGE_MAX = 64;$/;"	v
+_REQUEST_MAX	downloadtool.h	/^const int _REQUEST_MAX = 1024;$/;"	v
+m_addr	downloadtool.h	/^	string m_addr;$/;"	m	struct:IpAndDomainAndAddr
+m_domain	downloadtool.h	/^	string m_domain;$/;"	m	struct:IpAndDomainAndAddr
+m_fd	downloadtool.h	/^	int m_fd;$/;"	m	struct:NameAndFd
+m_fdCli	downloadtool.h	/^	int m_fdCli;$/;"	m	struct:Download
+m_ip	downloadtool.h	/^	string m_ip;$/;"	m	struct:IpAndDomainAndAddr
+m_name	downloadtool.h	/^	string m_name;$/;"	m	struct:NameAndFd
+m_url	downloadtool.h	/^	string m_url;$/;"	m	struct:Download
+main	Test/test.c	/^int main()$/;"	f
+main	downloadtool.c	/^int main(int argc, char *argv[])$/;"	f
+std	Test/test.c	/^using namespace std;$/;"	v
+usage	downloadtool.h	/^void usage() $/;"	f
