@@ -1,5 +1,23 @@
-#include "downloadtool.h" 
+#include "download.h" 
 
+///////////////////////////////////////////////////////////////////////////////////
+// @ 定义全局变量
+
+// @ 当前正在下载的任务数
+int _CURDISPLAY = 1;
+pthread_mutex_t curDisplayLock = PTHREAD_MUTEX_INITIALIZER;
+
+// @ 窗口
+DownWindow dw;
+// @ 线程池
+Threadpool tp;
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// @ 方法实现
+
+// @ 基本使用方法
+void usage() { cout << "./downloadtool" << endl; }
 
 // @ 从sock所指向的文件读取一行到buf中（包括换行），buf容量有buf_len指定
 int GetLine(int sock, char *buf, int buf_len)
@@ -209,12 +227,34 @@ int  ConnectServer(string & ip)
 //             configfd(要下载的配置文件描述符)
 //             fileLeftSize(要下载的文件剩余大小，开始时是文件总大小)
 //             offset(要下载的文件偏移，用来实现断点续传)
-void DownloadAndDisplay(int sockfd, int localfd, int configfd, int fileLeftSize, int offset)
+void DownloadAndDisplay(int sockfd, string fileName, int fileLeftSize, int offset)
 {
+	int localfd = 0;
+	if((localfd = open(fileName.c_str(), O_WRONLY)) < 0)
+	{
+		cout << "open " << fileName << " error" << endl;
+		exit(1);
+	}
+	
+	// @ 得到配置文件的路径 --> ./ConfFileName.config
+	char configPath[_FILENAME_MAX];
+	bzero(configPath, _FILENAME_MAX);
+	sprintf(configPath, "./%s.config", fileName.c_str());
+
+	// @ 打开配置文件
+	int configfd = 0;
+	if ((configfd = open(configPath, O_RDWR)) < 0)
+	{
+		cout << "open " << configPath << " error" << endl;
+		exit(1);
+	}
+
 	// @ 本地文件重定位到offset处	
 	lseek(localfd, offset, SEEK_SET);
 
 	lseek(configfd, 0, SEEK_SET);
+
+	// @ 得到配置文件中offset之前的长度，方便重定位到offset，把文件偏移写到配置文件
 	int infoLen = 0;
 	int c = '\0';
 	while(read(configfd, &c, 1) == 1)
@@ -230,8 +270,11 @@ void DownloadAndDisplay(int sockfd, int localfd, int configfd, int fileLeftSize,
 	bzero(offsetBuf, 32);
 
 	// @ 进度条初始化
-	char proBar[102];
-	bzero(proBar, sizeof(proBar));
+	char proBar[100];
+	char display[256];
+	//bzero(proBar, sizeof(proBar));
+	memset(proBar, ' ', sizeof(proBar));
+	memset(display, ' ', sizeof(display));
 
 	int hasCompletedPercent = ((float)(offset) / (float)(offset + fileLeftSize)) * 100;   // @ 已完成的百分比
 	float rate = 1.1;       // @ 下载速率
@@ -255,6 +298,11 @@ void DownloadAndDisplay(int sockfd, int localfd, int configfd, int fileLeftSize,
 	while(hasCompletedPercent--)
 		proBar[count++] = '*';
 
+	int myOrder = -1;
+	pthread_mutex_lock(&curDisplayLock);
+	myOrder = _CURDISPLAY++;
+	pthread_mutex_unlock(&curDisplayLock);
+
 	while(fileLeftSize > 0)
 	{
 		bzero(buf, _BUF_SIZE);
@@ -267,7 +315,7 @@ void DownloadAndDisplay(int sockfd, int localfd, int configfd, int fileLeftSize,
 		
 		totalRead += rsz;
 
-	// @ 记录最近的一次写入信息，如果程序退出，从这个偏移开始下载
+		// @ 记录最近的一次写入信息，如果程序退出，从这个偏移开始下载
 		bzero(offsetBuf, sizeof(offsetBuf));
 		sprintf(offsetBuf, "%d", totalRead);     
 		// @ 文件指针重定位到固定位置去写覆盖offset
@@ -293,25 +341,23 @@ void DownloadAndDisplay(int sockfd, int localfd, int configfd, int fileLeftSize,
 				proBar[count++] = '*';
 			--count;
 
-			printf("[%-100s] [%d%%] [%.1f B/s] [%-ds]\r", proBar, ++count, rate, endOnceRecv - beginDown);
-			fflush(stdout);
+			//printf("[%-100s] [%d%% %.1fK/s %-ds <%s>\r", proBar, ++count, rate/1024, endOnceRecv - beginDown, fileName.c_str());
+			//fflush(stdout);
 
-			//sleep(1);
+			sprintf(display, "[%-100s] [%d%% %.1fK/s %-ds <%s>\r", proBar, ++count, rate/1024, endOnceRecv-beginDown, fileName.c_str());
+			string downInfo(display);
+
+			pthread_mutex_lock(&curDisplayLock);
+			dw.put_str_to_win(dw.get_output(), myOrder, 1, downInfo);
+			pthread_mutex_unlock(&curDisplayLock);
+			dw.win_refresh(dw.get_output());
 
 			gap = gap % moveGap;
-		}
+		} /* if(gap >= moveGap && count < 100) */
 
 		fileLeftSize -= rsz;
-		//if(100 <= count)
-		//	break;
 	}
-	cout << endl;
-	
-	char configPath[_FILENAME_MAX];
-	bzero(configPath, sizeof(configPath));
-	
-	// @ 关闭本地下载文件
-	close(localfd);
+	//cout << endl;
 }
 
 // @ 重新连接服务器并下载文件
@@ -322,50 +368,28 @@ void ReConnAndDown(struct IpAndDomainAndAddr & ida, int offset)
 	string ip = ida.m_ip;
 	string domain = ida.m_domain;
 	string addr = ida.m_addr;
-
+	
 	int sockfd = ConnectServer(ip);
-
+	
 	// @ 重新发送请求报文
 	SendRequestGram(sockfd, ida, offset);
-
+	
 	// @ 解析响应报文
-	int fileSize = RecvResponseGram(sockfd);
-#ifdef __DEBUG__
-	cout << "in func ReConnServer, fileSize : " << fileSize << endl;
-#endif
-
+	int fileLeftSize = RecvResponseGram(sockfd);
+	#ifdef __DEBUG__
+	cout << "in func ReConnServer, fileLeftSize : " << fileLeftSize << endl;
+	#endif
+	
 	ClearHead(sockfd);	
-
+	
 	// get local file name used for open it
 	string fileName = GetFilenameFromAddr(addr);
-	int localfd = 0;
-	if((localfd = open(fileName.c_str(), O_WRONLY)) < 0)
-	{
-		cout << "open " << fileName << " error" << endl;
-		exit(1);
-	}
-
 	
-	// @ 得到配置文件的路径 --> ./ConfFileName.config
-	char configPath[_FILENAME_MAX];
-	bzero(configPath, _FILENAME_MAX);
-	sprintf(configPath, "./%s.config", fileName.c_str());
-
-	// @ 打开配置文件
-	int configfd = 0;
-	if ((configfd = open(configPath, O_RDWR)) < 0)
-	{
-		cout << "open " << configPath << " error" << endl;
-		exit(1);
-	}
-
 	// @ 开始下载
-	DownloadAndDisplay(sockfd, localfd, configfd, fileSize, offset);
-
-	close(localfd);
-	close(configfd);
-
-	//remove(configPath);	
+	DownloadAndDisplay(sockfd, fileName, fileLeftSize, offset);
+	
+	//close(localfd);
+	//close(configfd);
 }
 
 // @ 得到文件的后缀名(包括.号)
@@ -374,12 +398,12 @@ void ReConnAndDown(struct IpAndDomainAndAddr & ida, int offset)
 //             suffer(输出型参数，拿出后缀)
 bool GetSuffer(const char *str, int len, char *suffer)
 {
-#ifdef __DEBUG__
+	#ifdef __DEBUG__
 	cout << "get in the GetSuffer" << endl;
 	cout << "str : " << str << endl;
 	cout << "len : " << len << endl;
-#endif
-
+	#endif
+	
 	if(NULL == str || 0 >= len)
 		return false;
 	int end = len - 1;
@@ -392,7 +416,7 @@ bool GetSuffer(const char *str, int len, char *suffer)
 		}
 		--end;
 	}
-
+	
 	return false;
 }
 
@@ -412,16 +436,16 @@ bool HasConfigFile(queue<int> & fdq)
 	while((ptr = readdir(dir)) != NULL)
 	{
 		bzero(fileName, sizeof(fileName));
-
+	
 		// @ 从ptr(struct dirent *类型)里取出文件名放到fileName中
 		sprintf(fileName, "%s", ptr->d_name);
-
+	
 		char suffer[_FILENAME_MAX];
 		bzero(suffer, _FILENAME_MAX);
 		bool ret = GetSuffer(fileName, strlen(fileName), suffer);
 		if(!ret)
 			continue;
-
+	
 		if(strncmp(suffer, ".config", strlen(".config")) == 0)
 		{
 			int fd = open(fileName, O_RDWR); 
@@ -429,166 +453,165 @@ bool HasConfigFile(queue<int> & fdq)
 			fdq.push(fd);
 		}
 	}
-
+	
 	return fdq.size() != 0;
 }
 
-// @ 下载文件，默认端口号 80
-int main(int argc, char *argv[])
+void *ThreadDown(void *arg)
 {
-	if(1 != argc)
+	if(NULL == arg)
 	{
-		usage();
-		exit(1);
+		cout << "empty url..." << endl;
+		pthread_exit(NULL);
 	}
+	
+	string s = *(string *)arg;
+	
 	struct IpAndDomainAndAddr ida;
-
+	string ip, addr, domain;
+	
 	char infoBreak[_BREAK_MAX];
 	bzero(infoBreak, _BREAK_MAX);
 
-	// @ 刚进入程序，首先看有没有配置文件
-	queue<int> fdq;
-	bool hasconfig = HasConfigFile(fdq);
+	ida = AnalyseUrl(*(string*)arg);
+	string fileName = GetFilenameFromAddr(ida.m_addr);
 
-	// @ 有配置文件，开始断点续传
-	if(hasconfig)    
+#ifdef __DEBUG__
+	cout << "ip : " << ida.m_ip << endl;
+	cout << "domain : " << ida.m_domain << endl;
+	cout << "addr : " << ida.m_addr << endl;
+#endif
+
+	// @ config file
+	char configPath[_FILENAME_MAX];
+	bzero(configPath, _FILENAME_MAX);
+	sprintf(configPath, "./%s.config", fileName.c_str());
+	// @ 记录断点信息
+	sprintf(infoBreak, "%s %s %s\n", ida.m_ip.c_str(), ida.m_domain.c_str(), ida.m_addr.c_str());
+
+	// @ 创建配置文件 
+	creat(configPath, S_IWUSR | S_IRUSR);
+	int configfd = open(configPath, O_RDWR); 
+	int infoLen = strlen(infoBreak);        // @ 断点信息长度，方便文件指针越过断点信息一行 重定位到offset处
+	write(configfd, infoBreak, infoLen);    // @ ip domain addr \n offset
+
+	ip = ida.m_ip;
+	domain = ida.m_domain;
+	addr = ida.m_addr;
+
+	// @ 连接服务器
+	int sockfd = ConnectServer(ip);
+
+	// @ 发送请求报文
+	SendRequestGram(sockfd, ida, 0); 
+
+	// @ 解析响应报文
+	int fileSize = RecvResponseGram(sockfd);
+
+	if(fileSize == 0)
 	{
-		while(!fdq.empty())
-		{
-			int configfd = fdq.front();
-			fdq.pop();
-
-			string ip = "";
-			string domain = "";
-			string addr = "";
-			string offset = "";
-			char c = '\0';
-			int i = 0;
-
-			// @ 从配置文件取出ip，重新连接服务器需要用到
-			while(read(configfd, &c, 1) == 1)
-			{
-				if(' ' == c)
-					break;
-				ip += c;
-			}
-			
-			// @ 从配置文件取出域名，在请求报文头部中Host:字段用到
-			while(read(configfd, &c, 1) == 1)
-			{
-				if(' ' == c)
-					break;
-				domain += c;				
-			}
-
-			// @ 从配置文件取出addr，因为需要打开本地下载文件，就需要知道文件名
-			while(read(configfd, &c, 1) == 1)
-			{
-				if('\n' == c)
-					break;
-				addr += c;
-			}
-
-			// @ 从配置文件取出offset，在断点续传中Range:字段用到 
-			// exit loop when EOF
-			while(read(configfd, &c, 1) == 1)
-			{
-				offset += c;
-			}
-
-			struct IpAndDomainAndAddr ida;
-			ida.m_ip = ip;
-			ida.m_domain = domain;
-			ida.m_addr = addr;
-			
-			// @ 重新连接并且从上次离开处下载文件
-			ReConnAndDown(ida, atoi(offset.c_str()));
-
-			string confAddr = ida.m_addr + ".config";
-			string confName = GetFilenameFromAddr(confAddr);
-			remove(confName.c_str());
-		}
+#ifdef __DEBUG__
+		cout << "nothing to story, input again :)" << endl;
+#endif
+		exit(1);
 	}
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	// @ 下面开始正常下载一个文件	
-	char *buf[128];
-	bzero(buf, sizeof(buf));	
-	string ip, addr, domain;
 
-	// @ 存储客户端的地址
-	struct sockaddr_in client;
-	socklen_t len = 0;
-	string url;
+	// @ 忽略其他头部信息，定位到相应消息体
+	ClearHead(sockfd);
+	
+	char localPath[_FILENAME_MAX];
+	bzero(localPath, _FILENAME_MAX);
+	sprintf(localPath, "./%s", fileName.c_str());
+
+	// @ 创建一个和要下载的文件同名的本地文件
+	creat(localPath, S_IWUSR | S_IRUSR);
+	//int localfd = open(localPath, O_RDWR); 
+
+	// @ 开始下载任务
+	DownloadAndDisplay(sockfd, fileName, fileSize, 0);
+
+	remove(configPath);
+
+	return NULL;
+}
+
+void BreakPointDown(queue<int> & fdq)
+{
+	while(!fdq.empty())
+	{
+		int configfd = fdq.front();
+		fdq.pop();
+
+		string ip = "";
+		string domain = "";
+		string addr = "";
+		string offset = "";
+		char c = '\0';
+		int i = 0;
+
+		// @ 从配置文件取出ip，重新连接服务器需要用到
+		while(read(configfd, &c, 1) == 1)
+		{
+			if(' ' == c)
+				break;
+			ip += c;
+		}
+		
+		// @ 从配置文件取出域名，在请求报文头部中Host:字段用到
+		while(read(configfd, &c, 1) == 1)
+		{
+			if(' ' == c)
+				break;
+			domain += c;				
+		}
+
+		// @ 从配置文件取出addr，因为需要打开本地下载文件，就需要知道文件名
+		while(read(configfd, &c, 1) == 1)
+		{
+			if('\n' == c)
+				break;
+			addr += c;
+		}
+
+		// @ 从配置文件取出offset，在断点续传中Range:字段用到 
+		// exit loop when EOF
+		while(read(configfd, &c, 1) == 1)
+		{
+			offset += c;
+		}
+
+		struct IpAndDomainAndAddr ida;
+		ida.m_ip = ip;
+		ida.m_domain = domain;
+		ida.m_addr = addr;
+			
+		// @ 重新连接并且从上次离开处下载文件
+		ReConnAndDown(ida, atoi(offset.c_str()));
+
+		string confAddr = ida.m_addr + ".config";
+		string confName = GetFilenameFromAddr(confAddr);
+
+		// @ 删除配置文件(下载完成以后，配置文件一定要删掉)
+		remove(confName.c_str());
+	}
+}
+
+void *ThreadDisplayHeader(void *arg)
+{
+	string display = "Welcome to Thunder";
+	int x = 0, y;
+
 	while(1)
 	{
-		cout << "input url > ";
-		cin >> url;
-		// url = "http://www.baidu.com/";
-		// http://sw.bos.baidu.com/sw-search-sp/software/84b5fcf50a3de/QQ_8.7.19083.0_setup.exe
+		int max_y, max_x;
+		getmaxyx(dw.get_header(), max_y, max_x);
+		y = max_y/2-1;
+		dw.clear_win_line(dw.get_header(), y, 1);
+		dw.put_str_to_win(dw.get_header(), y, ++x%max_x, display);
+		sleep(1);
+		dw.win_refresh(dw.get_header());
+	}
 
-#ifdef __DEBUG__
-		cout << "url : " << url << endl;
-#endif
-/////////////////////////////////////////////////////////////////////////////////////////// belong to a thread, only need a url
-		ida = AnalyseUrl(url);
-		string fileName = GetFilenameFromAddr(ida.m_addr);
-
-#ifdef __DEBUG__
-		cout << "ip : " << ida.m_ip << endl;
-		cout << "domain : " << ida.m_domain << endl;
-		cout << "addr : " << ida.m_addr << endl;
-#endif
-		// @ config file
-		char configPath[_FILENAME_MAX];
-		bzero(configPath, _FILENAME_MAX);
-		sprintf(configPath, "./%s.config", fileName.c_str());
-
-		// @ 记录断点信息
-		sprintf(infoBreak, "%s %s %s\n", ida.m_ip.c_str(), ida.m_domain.c_str(), ida.m_addr.c_str());
-
-		// @ 创建配置文件 
-		creat(configPath, S_IWUSR | S_IRUSR);
-		int configfd = open(configPath, O_RDWR); 
-		int infoLen = strlen(infoBreak);        // @ 断点信息长度，方便文件指针越过断点信息一行 重定位到offset处
-		write(configfd, infoBreak, infoLen);    // @ ip domain addr \n offset
-
-		ip = ida.m_ip;
-		domain = ida.m_domain;
-		addr = ida.m_addr;
-
-		// @ 连接服务器
-		int sockfd = ConnectServer(ip);
-
-		// @ 发送请求报文
-		SendRequestGram(sockfd, ida, 0); 
-
-		// @ 解析响应报文
-		int fileSize = RecvResponseGram(sockfd);
-
-		if(fileSize == 0)
-		{
-			cout << "nothing to story, input again :)" << endl;
-			exit(1);
-		}
-
-		// @ 忽略其他头部信息，定位到相应消息体
-		ClearHead(sockfd);
-
-		char localPath[_FILENAME_MAX];
-		bzero(localPath, _FILENAME_MAX);
-		sprintf(localPath, "./%s", fileName.c_str());
-
-		// @ 创建一个和要下载的文件同名的本地文件
-		creat(localPath, S_IWUSR | S_IRUSR);
-		int localfd = open(localPath, O_RDWR); 
-
-		DownloadAndDisplay(sockfd, localfd, configfd, fileSize, 0);
-
-		remove(configPath);
-
-	} /* while(1) */
-
-	return 0;
+	return NULL;
 }
+

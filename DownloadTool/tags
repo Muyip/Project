@@ -4,42 +4,89 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-AnalyseUrl	downloadtool.c	/^IpAndDomainAndAddr AnalyseUrl(string & url)$/;"	f
+Add	Test/1/header.cpp	/^int Add(int x, int y)$/;"	f
+AddWorkToWorkQueue	pool/threadpool.cpp	/^void Threadpool::AddWorkToWorkQueue(void *(*process) (void *arg), void *arg)$/;"	f	class:Threadpool
+AnalyseUrl	download/download.cpp	/^IpAndDomainAndAddr AnalyseUrl(string & url)$/;"	f
+BreakPointDown	download/download.cpp	/^void BreakPointDown(queue<int> & fdq)$/;"	f
 CC	Makefile	/^CC=g++$/;"	m
-ClearHead	downloadtool.c	/^void ClearHead(int sock)$/;"	f
-ConnectServer	downloadtool.c	/^int  ConnectServer(string & ip)$/;"	f
-DEFAULT_PORT	downloadtool.h	26;"	d
-DLT_BIN	Makefile	/^DLT_BIN=downloadtool$/;"	m
-DLT_SRC	Makefile	/^DLT_SRC=downloadtool.c$/;"	m
-Download	downloadtool.h	/^struct Download$/;"	s
-DownloadAndDisplay	downloadtool.c	/^void DownloadAndDisplay(int sockfd, int localfd, int configfd, int fileLeftSize, int offset)$/;"	f
-GetFilenameFromAddr	downloadtool.c	/^string GetFilenameFromAddr(string reqAddr)$/;"	f
-GetLine	downloadtool.c	/^int GetLine(int sock, char *buf, int buf_len)$/;"	f
-GetSuffer	downloadtool.c	/^bool GetSuffer(const char *str, int len, char *suffer)$/;"	f
-HasConfigFile	downloadtool.c	/^bool HasConfigFile(queue<int> & fdq)$/;"	f
-IpAndDomainAndAddr	downloadtool.h	/^struct IpAndDomainAndAddr$/;"	s
-NameAndFd	downloadtool.h	/^struct NameAndFd$/;"	s
-ReConnAndDown	downloadtool.c	/^void ReConnAndDown(struct IpAndDomainAndAddr & ida, int offset)$/;"	f
-ReadSameFile1	Test/test.c	/^void *ReadSameFile1(void *arg)$/;"	f
-ReadSameFile2	Test/test.c	/^void *ReadSameFile2(void *arg)$/;"	f
-RecvResponseGram	downloadtool.c	/^int RecvResponseGram(int sockfd)$/;"	f
-SendRequestGram	downloadtool.c	/^void SendRequestGram(int sockfd, struct IpAndDomainAndAddr &info, int offset)$/;"	f
-_ADDR_MAX	downloadtool.h	/^const int _ADDR_MAX = 256; $/;"	v
-_BREAK_MAX	downloadtool.h	/^const int _BREAK_MAX = 256; $/;"	v
-_BUF_SIZE	downloadtool.h	/^const int _BUF_SIZE = 4096;$/;"	v
-_DOMAIN_MAX	downloadtool.h	/^const int _DOMAIN_MAX = 64;$/;"	v
-_FILENAME_MAX	downloadtool.h	/^const int _FILENAME_MAX = 64;$/;"	v
-_LINE_MAX	downloadtool.h	/^const int _LINE_MAX = 4096;$/;"	v
-_RANGE_MAX	downloadtool.h	/^const int _RANGE_MAX = 64;$/;"	v
-_REQUEST_MAX	downloadtool.h	/^const int _REQUEST_MAX = 1024;$/;"	v
-m_addr	downloadtool.h	/^	string m_addr;$/;"	m	struct:IpAndDomainAndAddr
-m_domain	downloadtool.h	/^	string m_domain;$/;"	m	struct:IpAndDomainAndAddr
-m_fd	downloadtool.h	/^	int m_fd;$/;"	m	struct:NameAndFd
-m_fdCli	downloadtool.h	/^	int m_fdCli;$/;"	m	struct:Download
-m_ip	downloadtool.h	/^	string m_ip;$/;"	m	struct:IpAndDomainAndAddr
-m_name	downloadtool.h	/^	string m_name;$/;"	m	struct:NameAndFd
-m_url	downloadtool.h	/^	string m_url;$/;"	m	struct:Download
-main	Test/test.c	/^int main()$/;"	f
-main	downloadtool.c	/^int main(int argc, char *argv[])$/;"	f
-std	Test/test.c	/^using namespace std;$/;"	v
-usage	downloadtool.h	/^void usage() $/;"	f
+CORE_NUM_OF_COMPUTER	pool/config.h	/^const size_t CORE_NUM_OF_COMPUTER = 10;$/;"	v
+ClearHead	download/download.cpp	/^void ClearHead(int sock)$/;"	f
+ConnectServer	download/download.cpp	/^int  ConnectServer(string & ip)$/;"	f
+DEFAULT_PORT	download/download.h	34;"	d
+DLT_BIN	Makefile	/^DLT_BIN=mythunder$/;"	m
+DLT_SRC	Makefile	/^DLT_SRC= download\/mythunder.cpp download\/download.cpp window\/window.cpp pool\/threadpool.cpp$/;"	m
+DownWindow	window/window.cpp	/^DownWindow::DownWindow()$/;"	f	class:DownWindow
+DownWindow	window/window.h	/^class DownWindow$/;"	c
+Download	download/download.h	/^struct Download$/;"	s
+DownloadAndDisplay	download/download.cpp	/^void DownloadAndDisplay(int sockfd, string fileName, int fileLeftSize, int offset)$/;"	f
+G_BLOCK_SIZE	window/window.h	/^const int G_BLOCK_SIZE = 256;$/;"	v
+GetFilenameFromAddr	download/download.cpp	/^string GetFilenameFromAddr(string reqAddr)$/;"	f
+GetLine	download/download.cpp	/^int GetLine(int sock, char *buf, int buf_len)$/;"	f
+GetSuffer	download/download.cpp	/^bool GetSuffer(const char *str, int len, char *suffer)$/;"	f
+HasConfigFile	download/download.cpp	/^bool HasConfigFile(queue<int> & fdq)$/;"	f
+IpAndDomainAndAddr	download/download.h	/^struct IpAndDomainAndAddr$/;"	s
+NameAndFd	download/download.h	/^struct NameAndFd$/;"	s
+ReConnAndDown	download/download.cpp	/^void ReConnAndDown(struct IpAndDomainAndAddr & ida, int offset)$/;"	f
+RecvResponseGram	download/download.cpp	/^int RecvResponseGram(int sockfd)$/;"	f
+SendRequestGram	download/download.cpp	/^void SendRequestGram(int sockfd, struct IpAndDomainAndAddr &info, int offset)$/;"	f
+Task	pool/threadpool.h	/^		Task(pFun process = NULL, void *arg = NULL)$/;"	f	class:Task
+Task	pool/threadpool.h	/^class Task$/;"	c
+ThreadDisplayHeader	download/download.cpp	/^void *ThreadDisplayHeader(void *arg)$/;"	f
+ThreadDown	download/download.cpp	/^void *ThreadDown(void *arg)$/;"	f
+ThreadRoutine	pool/threadpool.cpp	/^void *Threadpool::ThreadRoutine(void *arg)$/;"	f	class:Threadpool
+Threadpool	pool/threadpool.cpp	/^Threadpool::Threadpool(size_t threadNum \/* = CORE_NUM_OF_COMPUTER *\/)$/;"	f	class:Threadpool
+Threadpool	pool/threadpool.h	/^class Threadpool$/;"	c
+_ADDR_MAX	download/download.h	/^const int _ADDR_MAX = 256; $/;"	v
+_BREAK_MAX	download/download.h	/^const int _BREAK_MAX = 256; $/;"	v
+_BUF_SIZE	download/download.h	/^const int _BUF_SIZE = 40960;$/;"	v
+_CURDISPLAY	download/download.cpp	/^int _CURDISPLAY = 1;$/;"	v
+_DOMAIN_MAX	download/download.h	/^const int _DOMAIN_MAX = 64;$/;"	v
+_FILENAME_MAX	download/download.h	/^const int _FILENAME_MAX = 64;$/;"	v
+_LINE_MAX	download/download.h	/^const int _LINE_MAX = 4096;$/;"	v
+_RANGE_MAX	download/download.h	/^const int _RANGE_MAX = 64;$/;"	v
+_REQUEST_MAX	download/download.h	/^const int _REQUEST_MAX = 1024;$/;"	v
+_arg	pool/threadpool.h	/^		void *_arg;         \/\/ @ 该函数的参数$/;"	m	class:Task
+_destroy	pool/threadpool.h	/^		bool              _destroy;             \/\/ @ 是否销毁线程池, ThreadRoutine要用到$/;"	m	class:Threadpool
+_process	pool/threadpool.h	/^		pFun  _process;     \/\/ @ 该任务需要运行的函数$/;"	m	class:Task
+_taskAvailable	pool/threadpool.h	/^		pthread_cond_t    _taskAvailable;       \/\/ @ 任务队列中有任务，需要唤醒一个线程$/;"	m	class:Threadpool
+_taskQueue	pool/threadpool.h	/^		queue<Task *>     _taskQueue;           \/\/ @ 存放任务的队列$/;"	m	class:Threadpool
+_taskQueueLock	pool/threadpool.h	/^		pthread_mutex_t   _taskQueueLock;       \/\/ @ 往任务队列中添加或删除任务时，需要先加锁$/;"	m	class:Threadpool
+_threadId	pool/threadpool.h	/^		vector<pthread_t> _threadId;            \/\/ @ 线程id向量$/;"	m	class:Threadpool
+clear_win_line	window/window.cpp	/^void DownWindow::clear_win_line(WINDOW* _win, int begin, int num)$/;"	f	class:DownWindow
+create_win	window/window.cpp	/^WINDOW* DownWindow::create_win(const int& hei,const int& wth, const int& y, const int& x)$/;"	f	class:DownWindow
+curDisplayLock	download/download.cpp	/^pthread_mutex_t curDisplayLock = PTHREAD_MUTEX_INITIALIZER;$/;"	v
+draw_header	window/window.cpp	/^void DownWindow::draw_header()$/;"	f	class:DownWindow
+draw_input	window/window.cpp	/^void DownWindow::draw_input()$/;"	f	class:DownWindow
+draw_output	window/window.cpp	/^void DownWindow::draw_output()$/;"	f	class:DownWindow
+dw	download/download.cpp	/^DownWindow dw;$/;"	v
+get_header	window/window.h	/^		WINDOW* get_header()$/;"	f	class:DownWindow
+get_input	window/window.h	/^		WINDOW* get_input()$/;"	f	class:DownWindow
+get_output	window/window.h	/^		WINDOW* get_output()$/;"	f	class:DownWindow
+get_str_from_win	window/window.cpp	/^void DownWindow::get_str_from_win(WINDOW* _win, string& _out)$/;"	f	class:DownWindow
+h1	Test/1/header.cpp	/^int h1 = 1;$/;"	v
+h2	Test/1/header.cpp	/^int h2 = 2;$/;"	v
+header	window/window.h	/^		WINDOW* header;$/;"	m	class:DownWindow
+init	window/window.cpp	/^void DownWindow::init()$/;"	f	class:DownWindow
+input	window/window.h	/^		WINDOW* input;$/;"	m	class:DownWindow
+lock	window/window.h	/^		pthread_mutex_t lock;$/;"	m	class:DownWindow
+m_addr	download/download.h	/^	string m_addr;$/;"	m	struct:IpAndDomainAndAddr
+m_domain	download/download.h	/^	string m_domain;$/;"	m	struct:IpAndDomainAndAddr
+m_fd	download/download.h	/^	int m_fd;$/;"	m	struct:NameAndFd
+m_fdCli	download/download.h	/^	int m_fdCli;$/;"	m	struct:Download
+m_ip	download/download.h	/^	string m_ip;$/;"	m	struct:IpAndDomainAndAddr
+m_name	download/download.h	/^	string m_name;$/;"	m	struct:NameAndFd
+m_url	download/download.h	/^	string m_url;$/;"	m	struct:Download
+main	Test/1/test.cpp	/^int main()$/;"	f
+main	Test/a.c	/^int main()$/;"	f
+main	download/mythunder.cpp	/^int main(int argc, char *argv[])$/;"	f
+mutex	Test/1/header.cpp	/^pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;$/;"	v
+output	window/window.h	/^		WINDOW* output;$/;"	m	class:DownWindow
+outputLock	window/window.h	/^		pthread_mutex_t outputLock;$/;"	m	class:DownWindow
+pFun	pool/threadpool.h	/^		typedef void *(*pFun) (void *arg);$/;"	t	class:Task
+put_str_to_win	window/window.cpp	/^void DownWindow::put_str_to_win(WINDOW* _win, int y, int x, const string& _str)$/;"	f	class:DownWindow
+std	Test/a.c	/^using namespace std;$/;"	v
+tp	download/download.cpp	/^Threadpool tp;$/;"	v
+usage	download/download.cpp	/^void usage() { cout << ".\/downloadtool" << endl; }$/;"	f
+win_refresh	window/window.cpp	/^void DownWindow::win_refresh(WINDOW* _win)$/;"	f	class:DownWindow
+~DownWindow	window/window.cpp	/^DownWindow::~DownWindow()$/;"	f	class:DownWindow
+~Threadpool	pool/threadpool.cpp	/^Threadpool::~Threadpool()$/;"	f	class:Threadpool
