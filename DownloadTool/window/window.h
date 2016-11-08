@@ -43,9 +43,8 @@ class DownWindow
 		}
 
 	private:
-		WINDOW* header;
-		WINDOW* input;
-		WINDOW* output;
-		pthread_mutex_t lock;
-		pthread_mutex_t outputLock;
+		WINDOW* header;         // @ 头部窗口的句柄
+		WINDOW* input;          // @ 输入窗口的句柄
+		WINDOW* output;         // @ 输出窗口的句柄
+		pthread_mutex_t lock;   // @ 刷新窗口时需要互斥访问窗口句柄
 };

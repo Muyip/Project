@@ -603,13 +603,14 @@ void *ThreadDisplayHeader(void *arg)
 
 	while(1)
 	{
-		int max_y, max_x;
-		getmaxyx(dw.get_header(), max_y, max_x);
+		int max_y, screen, max_x;
+		getmaxyx(dw.get_header(), max_y, screen);
+		max_x = screen - display.size();
 		y = max_y/2-1;
 		dw.clear_win_line(dw.get_header(), y, 1);
 		dw.put_str_to_win(dw.get_header(), y, ++x%max_x, display);
-		sleep(1);
 		dw.win_refresh(dw.get_header());
+		usleep(100000);
 	}
 
 	return NULL;
